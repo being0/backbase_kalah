@@ -13,7 +13,7 @@ import java.io.IOException;
  * @version 1, 12/12/2020
  */
 @Converter(autoApply = true)
-public class JpaJsonConverter implements AttributeConverter<Object, String> {
+public class JpaJsonConverter implements AttributeConverter<int[], String> {
 
     // ObjectMapper is thread safe
     private final static ObjectMapper jsonMapper;
@@ -24,7 +24,7 @@ public class JpaJsonConverter implements AttributeConverter<Object, String> {
     }
 
     @Override
-    public String convertToDatabaseColumn(Object object) {
+    public String convertToDatabaseColumn(int[] object) {
         if (object == null) return null;
         try {
             return jsonMapper.writeValueAsString(object);
@@ -34,10 +34,10 @@ public class JpaJsonConverter implements AttributeConverter<Object, String> {
     }
 
     @Override
-    public Object convertToEntityAttribute(String dbData) {
+    public int[] convertToEntityAttribute(String dbData) {
         if (dbData == null) return null;
         try {
-            return jsonMapper.readValue(dbData, Object.class);
+            return jsonMapper.readValue(dbData, int[].class);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
