@@ -20,6 +20,14 @@ public class RedissionLockProvider implements LockProvider {
     @Resource
     private RedissonClient redissonClient;
 
+    /**
+     * Do the function in a distributed lock base on game id, the lock is provided by Redis using Redission client.
+     * Using fair lock preserve the order of calls
+     *
+     * @param kalahGame     kalah game
+     * @param kalahGameFunc function that should be done in lock
+     * @return Kalah game
+     */
     @Override
     public KalahGame doInLock(KalahGame kalahGame, Function<KalahGame, KalahGame> kalahGameFunc) {
 

@@ -41,13 +41,15 @@ public class KalahGame {
     /**
      * Date of order creation
      */
-    @Column(name = "created")
+    @Column(name = "created", length = 6)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date created;
 
     /**
      * Date order modified
      */
-    @Column(name = "modified")
+    @Column(name = "modified", length = 6)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date modified;
 
     /**
@@ -79,6 +81,8 @@ public class KalahGame {
     /**
      * Board model
      */
+    @Convert(converter = JpaJsonConverter.class)
+    @Column(name = "board_json", columnDefinition = "json")
     private int[] board;
 
     public KalahGame(Long id, GameStatus status, Date created, Date modified,

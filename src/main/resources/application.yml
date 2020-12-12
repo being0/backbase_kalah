@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+spring:
+
+  jackson:
+    default-property-inclusion: NON_NULL
+    property-naming-strategy: CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
+    serialization.INDENT_OUTPUT: false
+    serialization:
+      write-dates-as-timestamps: true
+
+  jpa:
+    database: mysql
+
+  datasource:
+    url: jdbc:mysql://${db_ip:localhost}/${db_name:kalah_game_db}?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF8
+    username: ${db_username:root}
+    password: ${db_password:root}
+    tomcat:
+      max-active: 150
+      max-idle: 100
+      min-idle: 3
+      min-evictable-idle-time-millis: 100000
+      test-on-borrow: true
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-return: false
+      validation-interval: 30000
+      time-between-eviction-runs-millis: 34000
+      max-wait: 10000
+      initial-size: 20
+      remove-abandoned: true
+      remove-abandoned-timeout: 60

@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+
+  mysql:
+    container_name: bakcbase_kalah_mysql
+    build: mysql/
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:alpine
+    container_name: backbase_kalah_redis
+    ports:
+      - "6379:6379"
