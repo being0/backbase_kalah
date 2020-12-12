@@ -185,7 +185,7 @@ public class KalahGame {
             stones--;
 
             if (stones == 0) {
-
+                // The last stone
                 if (currentPitId != kalahIndex) {
                     if (board[currentPitId] == 1 && getPlayerSide().isOnMySide(currentPitId, noOfPits)) {
                         // The pit was empty and it is last stone and is on player side
