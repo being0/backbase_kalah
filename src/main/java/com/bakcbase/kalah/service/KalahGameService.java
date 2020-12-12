@@ -8,8 +8,20 @@ import com.bakcbase.kalah.to.KalahGameTo;
  */
 public interface KalahGameService {
 
+    /**
+     * Create a Kalah game
+     *
+     * @return Kalah game
+     */
     KalahGameTo create();
 
+    /**
+     * Moves the Kalah game to next state according to the selected pit id
+     *
+     * @param gameId game id
+     * @param pitId  pit id
+     * @return Kalah game
+     */
     KalahGameTo move(Long gameId, Integer pitId);
 
 }

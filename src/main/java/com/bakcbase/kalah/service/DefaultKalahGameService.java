@@ -17,6 +17,8 @@ public class DefaultKalahGameService implements KalahGameService {
     private KalahGameMapper kalahGameMapper;
     @Resource
     private KalahGameRepository kalahGameRepository;
+    @Resource
+    private LockProvider lockProvider;
 
     @Value("${kalah_game.noOfPits:6}")
     private int noOfPits;
@@ -43,9 +45,16 @@ public class DefaultKalahGameService implements KalahGameService {
         KalahGame kalahGame = kalahGameRepository.findById(gameId)
                 .orElseThrow(() -> new KalahGameNotFoundException("No Kalah game found for the specified id!"));
 
-        // Move the Kalah game
-        KalahGame movedKalahGame = kalahGame.doMove(pitId);
+        // Do the movement in a distributed synchronized block
+        KalahGame movedGame = lockProvider.doInLock(kalahGame, (kg) -> {
 
-        return kalahGameMapper.mapToDto(movedKalahGame);
+            // Move the Kalah game
+            KalahGame movedKalahGame = kg.doMove(pitId);
+
+            // Save on repository
+            return kalahGameRepository.save(movedKalahGame);
+        });
+
+        return kalahGameMapper.mapToDto(movedGame);
     }
 }
