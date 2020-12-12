@@ -7,6 +7,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Stream;
 
+import static com.bakcbase.kalah.service.model.KalahGame.BoardSide.down;
+import static com.bakcbase.kalah.service.model.KalahGame.BoardSide.up;
+import static com.bakcbase.kalah.service.model.KalahGame.GameStatus.*;
+
 /**
  * @author <a href="mailto:raliakbari@gmail.com">Reza Aliakbari</a>
  * @version 1, 12/11/2020
@@ -59,12 +63,12 @@ public class KalahGame {
     private Integer noOfPits;
 
     /**
-     * Keep turn as 0/1 to show which side turn is it(up side or down side). At first it is null.
+     * Keep turn as 0/1 to show player side for the next move(up side or down side). At first it is null.
      */
-    @Column(name = "turn_side")
+    @Column(name = "player_side")
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
-    private Boolean turnSideId;
+    private Boolean playerSideId;
 
     @Transient
     private int kalah1Index;
@@ -85,7 +89,7 @@ public class KalahGame {
         this.modified = modified;
         this.noOfPits = noOfPits;
         this.noOfStones = noOfStones;
-        setTurnSide(turnSide);
+        setPlayerSide(turnSide);
         this.board = board;
 
         // Set kalah indexes
@@ -112,15 +116,15 @@ public class KalahGame {
         return GameStatus.of(statusId);
     }
 
-    public void setTurnSide(BoardSide turnSide) {
+    public void setPlayerSide(BoardSide playerSide) {
 
-        this.turnSideId = turnSide == null ? null : turnSide.getValue();
+        this.playerSideId = playerSide == null ? null : playerSide.getValue();
     }
 
-    public BoardSide getTurnSide() {
-        if (turnSideId == null) return null;
+    public BoardSide getPlayerSide() {
+        if (playerSideId == null) return null;
 
-        return BoardSide.of(turnSideId);
+        return BoardSide.of(playerSideId);
     }
 
     /**
@@ -153,21 +157,99 @@ public class KalahGame {
     public KalahGame doMove(Integer pitId) {
 
         // If game is over then return this
-        if (getStatus() == GameStatus.over) return this;
+        if (getStatus() == over) return this;
 
         // Validate move
         validateMove(pitId);
 
+        if (getPlayerSide() == null) {
+            setPlayerSide(actionSide(pitId));
+        } else if (getPlayerSide() != actionSide(pitId)) {
+            // It is not this side turn
+            throw new BadTurnException("It is not your turn. Wait for your opponent to move.");
+        }
+
         // Every checks passed, so move should be applied
-        setStatus(GameStatus.running);
+        setStatus(running);
+        int currentPitId = pitId;
+        int stones = board[pitId];
+        board[pitId] = 0; // Make this pit empty
+        BoardSide playerSide = getPlayerSide();
+        int kalahIndex = playerSide == down ? kalah1Index : kalah2Index;
+        while (stones > 0) {
+            currentPitId = getNextPitId(currentPitId);
 
-        // Make this pit empty
-        board[pitId] = 0;
+            // Add to stones of next pitId
+            board[currentPitId]++;
 
+            stones--;
+
+            if (stones == 0) {
+
+                if (currentPitId != kalahIndex) {
+                    if (board[currentPitId] == 1 && getPlayerSide().isOnMySide(currentPitId, noOfPits)) {
+                        // The pit was empty and it is last stone and is on player side
+                        applyEmptyPitFilled(currentPitId, kalahIndex);
+                    }
+
+                    // Change the player side
+                    setPlayerSide(getPlayerSide().getOpponentSide());
+                }
+
+                checkGameOver(playerSide);
+            }
+        }
 
         setModified(getCurrentTime());
 
         return this;
+    }
+
+    private void checkGameOver(BoardSide playerSide) {
+
+        int startIndex = playerSide == down ? 0 : noOfPits + 1;
+        boolean isOver = true;
+        for (int i = startIndex; isOver && i < startIndex + noOfPits; i++) {
+            isOver = board[i] == 0;
+        }
+
+        if (isOver) {
+            // Set game status over
+            setStatus(over);
+            // Put all the remaining into opponent kalah
+            startIndex = playerSide == down ? noOfPits + 1 : 0;
+            int opponentKalahIndex = playerSide == down ? kalah2Index : kalah1Index;
+
+            for (int i = startIndex; i < startIndex + noOfPits; i++) {
+                board[opponentKalahIndex] += board[i];
+                board[i] = 0;
+            }
+        }
+    }
+
+    private void applyEmptyPitFilled(int pitId, int kalahIndex) {
+
+        // Find the mirror pit of the opponent
+        int diff = kalahIndex - pitId;
+        int opponentPitId = pitId > noOfPits ? diff - 1 : kalah1Index + diff;
+
+        // Join the pit and opponent pit stones into kalah
+        board[kalahIndex] += (board[pitId] + board[opponentPitId]);
+        board[pitId] = 0;
+        board[opponentPitId] = 0;
+    }
+
+    private int getNextPitId(int pitId) {
+        pitId++;
+        if (pitId >= board.length) pitId = 0;
+
+        // If pitId is in the opponent kalah then jump over it
+        if (!getPlayerSide().isOnMySide(pitId, noOfPits) && (pitId == kalah1Index || pitId == kalah2Index)) {
+            pitId++;
+            if (pitId >= board.length) pitId = 0;
+        }
+
+        return pitId;
     }
 
     private void validateMove(Integer pitId) {
@@ -175,15 +257,11 @@ public class KalahGame {
         if (pitId == null || pitId < 0 || pitId > 13)
             throw new ValidationException("Pit Id should be valid positive number under 13.");
 
-        if (pitId == 0 || pitId == 13) throw new ValidationException("Stones in kalah can not be moved.");
+        if (pitId == kalah1Index || pitId == kalah2Index)
+            throw new ValidationException("Stones in kalah can not be moved.");
 
         // Pit should not be empty
         if (board[pitId] == 0) throw new EmptyPitException("The pit is empty!");
-
-        // Make sure it is correct pit id turn
-        if (getTurnSide() != null && getTurnSide() != actionSide(pitId)) {
-            throw new BadTurnException("It is not your turn. Wait for your opponent to move.");
-        }
     }
 
     /**
@@ -194,7 +272,7 @@ public class KalahGame {
      */
     private BoardSide actionSide(Integer pitId) {
 
-        return pitId < kalah1Index ? BoardSide.down : BoardSide.up;
+        return pitId < kalah1Index ? BoardSide.down : up;
     }
 
     private static Date getCurrentTime() {
@@ -257,6 +335,15 @@ public class KalahGame {
                     .orElseThrow(IllegalArgumentException::new);
         }
 
+        BoardSide getOpponentSide() {
+            return this == up ? down : up;
+        }
+
+        boolean isOnMySide(int pitId, int noOfPits) {
+            if (this == up && pitId > noOfPits) {
+                return true;
+            } else return this == down && pitId <= noOfPits;
+        }
     }
 
 }
