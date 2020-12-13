@@ -28,7 +28,7 @@ public class KalahGameController {
     @PutMapping("/{gameId}/pits/{pitId}")
     public KalahGameTo move(@PathVariable("gameId") Long gameId, @PathVariable("pitId") Integer pitId) {
 
-        return kalahGameService.move(gameId, pitId);
+        return kalahGameService.move(gameId, pitId - 1);
     }
 
 }

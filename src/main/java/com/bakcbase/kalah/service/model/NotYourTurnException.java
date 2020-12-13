@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @version 1, 12/11/2020
  */
 @ResponseStatus(HttpStatus.CONFLICT)
-public class BadTurnException extends BusinessException {
+public class NotYourTurnException extends BusinessException {
 
-    public BadTurnException() {
+    public NotYourTurnException() {
     }
 
-    public BadTurnException(String message) {
+    public NotYourTurnException(String message) {
         super(message);
     }
 
-    public BadTurnException(String message, Throwable cause) {
+    public NotYourTurnException(String message, Throwable cause) {
         super(message, cause);
     }
 }

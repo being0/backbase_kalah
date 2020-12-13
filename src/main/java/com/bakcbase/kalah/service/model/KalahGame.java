@@ -170,7 +170,7 @@ public class KalahGame {
             setPlayerSide(actionSide(pitId));
         } else if (getPlayerSide() != actionSide(pitId)) {
             // It is not this side turn
-            throw new BadTurnException("It is not your turn. Wait for your opponent to move.");
+            throw new NotYourTurnException("It is not your turn. Wait for your opponent to move.");
         }
 
         // Every checks passed, so move should be applied
