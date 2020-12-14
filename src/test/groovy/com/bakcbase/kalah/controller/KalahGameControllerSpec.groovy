@@ -99,7 +99,8 @@ class KalahGameControllerSpec extends Specification {
         Long id = 12L
         Integer pitId = 3
         kalahGameService.move(id, pitId) >>
-                new KalahGameTo(id, ["1": "6", "2": "6", "3": "0", "4": "7", "5": "7", "6": "7", "7": "1", "8": "7", "9": "7", "10": "6", "11": "6", "12": "6", "13": "6", "14": "0"])
+                new KalahGameTo(id, ["1": "6", "2": "6", "3": "0", "4": "7", "5": "7", "6": "7", "7": "1",
+                                     "8": "7", "9": "7", "10": "6", "11": "6", "12": "6", "13": "6", "14": "0"])
 
         when:
         def response = mockMvc.perform(MockMvcRequestBuilders.put("/games/{gameId}/pits/{pitId}", id, pitId))
@@ -110,7 +111,8 @@ class KalahGameControllerSpec extends Specification {
                 .andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("url").value("http://localhost/games/" + id))
                 .andExpect(MockMvcResultMatchers.jsonPath("status")
-                        .value(["1": "6", "2": "6", "3": "0", "4": "7", "5": "7", "6": "7", "7": "1", "8": "7", "9": "7", "10": "6", "11": "6", "12": "6", "13": "6", "14": "0"]))
+                        .value(["1": "6", "2": "6", "3": "0", "4": "7", "5": "7", "6": "7", "7": "1",
+                                "8": "7", "9": "7", "10": "6", "11": "6", "12": "6", "13": "6", "14": "0"]))
     }
 
 }
