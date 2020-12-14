@@ -19,7 +19,7 @@ public interface KalahGameService {
      * Moves the Kalah game to next state according to the selected pit id
      *
      * @param gameId game id
-     * @param pitId  pit id
+     * @param pitId  pit id starting from 1
      * @return Kalah game
      */
     KalahGameTo move(Long gameId, Integer pitId);

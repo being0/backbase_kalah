@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
+ * Kalah game service implementation. It persist kalah game into kalahGameRepository and do the movement in the lockProvider
+ * doInLock block to do the actions in synchronized block.
+ *
  * @author <a href="mailto:raliakbari@gmail.com">Reza Aliakbari</a>
  * @version 1, 12/12/2020
  */

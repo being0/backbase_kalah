@@ -19,6 +19,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class KalahGameTo {
 
+    private Long id;
+
     /**
      * the status of game for example {"1":"4","2":"4","3":"4","4":"4","5":"4","6":"4","7":"0","8":"4","
      * 9":"4","10":"4","11":"4","12":"4","13":"4","14":"0"}

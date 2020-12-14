@@ -97,6 +97,10 @@ public class KalahGame {
         this.board = board;
 
         // Set kalah indexes
+        setKalahIndexes();
+    }
+
+    private void setKalahIndexes() {
         kalah1Index = kalah1Index(noOfPits);
         kalah2Index = kalah2Index(noOfPits);
     }
@@ -155,13 +159,17 @@ public class KalahGame {
     /**
      * Moves stones from the specified pit id. This method is not thread safe, should be used in a synchronized environment.
      *
-     * @param pitId pit id
+     * @param pitId pit id starting from 1
      * @return Kalah game
      */
     public KalahGame doMove(Integer pitId) {
+        // pit id starts from 1, but inside it works from 0
+        if (pitId != null) pitId--;
 
         // If game is over then return this
         if (getStatus() == over) return this;
+
+        setKalahIndexes();
 
         // Validate move
         validateMove(pitId);
