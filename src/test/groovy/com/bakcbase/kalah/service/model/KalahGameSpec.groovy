@@ -21,8 +21,8 @@ class KalahGameSpec extends Specification {
         then:
         kalahGame.getId() == null
         kalahGame.getStatus() == created
-        now.time - 100l < kalahGame.getCreated().time
-        kalahGame.getCreated().time < now.time + 100l
+        now.time - 1000l < kalahGame.getCreated().time
+        kalahGame.getCreated().time < now.time + 1000l
         kalahGame.getCreated() == kalahGame.getModified()
         kalahGame.getPlayerSide() == null
         kalahGame.getNoOfPits() == 6
@@ -59,10 +59,11 @@ class KalahGameSpec extends Specification {
 
         where:
         invalidKalahId << [
-                6,  // Kalah
-                13, // Kalah
+                7,  // Kalah
+                14, // Kalah
+                0,  // zero
                 -1, // minus
-                14, // more than size of board
+                15, // more than size of board
                 null]
     }
 
@@ -73,7 +74,7 @@ class KalahGameSpec extends Specification {
         kalahGame.board = [1, 5, 6, 9, 7, 8, 6, 10, 6, 7, 5, 0, 6, 3] as int[]
 
         when:
-        kalahGame.doMove(11)
+        kalahGame.doMove(12)
 
         then:
         thrown(EmptyPitException)
@@ -93,18 +94,18 @@ class KalahGameSpec extends Specification {
 
         where:
         pitId | palyerSide
-        0     | up
         1     | up
         2     | up
         3     | up
         4     | up
         5     | up
-        7     | down
+        6     | up
         8     | down
         9     | down
         10    | down
         11    | down
         12    | down
+        13    | down
     }
 
     def '"doMove" Check couple of normal moves'() {
@@ -121,18 +122,18 @@ class KalahGameSpec extends Specification {
 
         where:
         pitId | palyerSide | expectedBoard
-        0     | down       | [0, 5, 5, 5, 5, 4, 0, 4, 4, 4, 4, 4, 4, 0] as int[]
-        1     | down       | [4, 0, 5, 5, 5, 5, 0, 4, 4, 4, 4, 4, 4, 0] as int[]
-        2     | down       | [4, 4, 0, 5, 5, 5, 1, 4, 4, 4, 4, 4, 4, 0] as int[]
-        3     | down       | [4, 4, 4, 0, 5, 5, 1, 5, 4, 4, 4, 4, 4, 0] as int[]
-        4     | down       | [4, 4, 4, 4, 0, 5, 1, 5, 5, 4, 4, 4, 4, 0] as int[]
-        5     | down       | [4, 4, 4, 4, 4, 0, 1, 5, 5, 5, 4, 4, 4, 0] as int[]
-        7     | up         | [4, 4, 4, 4, 4, 4, 0, 0, 5, 5, 5, 5, 4, 0] as int[]
-        8     | up         | [4, 4, 4, 4, 4, 4, 0, 4, 0, 5, 5, 5, 5, 0] as int[]
-        9     | up         | [4, 4, 4, 4, 4, 4, 0, 4, 4, 0, 5, 5, 5, 1] as int[]
-        10    | up         | [5, 4, 4, 4, 4, 4, 0, 4, 4, 4, 0, 5, 5, 1] as int[]
-        11    | up         | [5, 5, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0, 5, 1] as int[]
-        12    | up         | [5, 5, 5, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 1] as int[]
+        1     | down       | [0, 5, 5, 5, 5, 4, 0, 4, 4, 4, 4, 4, 4, 0] as int[]
+        2     | down       | [4, 0, 5, 5, 5, 5, 0, 4, 4, 4, 4, 4, 4, 0] as int[]
+        3     | down       | [4, 4, 0, 5, 5, 5, 1, 4, 4, 4, 4, 4, 4, 0] as int[]
+        4     | down       | [4, 4, 4, 0, 5, 5, 1, 5, 4, 4, 4, 4, 4, 0] as int[]
+        5     | down       | [4, 4, 4, 4, 0, 5, 1, 5, 5, 4, 4, 4, 4, 0] as int[]
+        6     | down       | [4, 4, 4, 4, 4, 0, 1, 5, 5, 5, 4, 4, 4, 0] as int[]
+        8     | up         | [4, 4, 4, 4, 4, 4, 0, 0, 5, 5, 5, 5, 4, 0] as int[]
+        9     | up         | [4, 4, 4, 4, 4, 4, 0, 4, 0, 5, 5, 5, 5, 0] as int[]
+        10    | up         | [4, 4, 4, 4, 4, 4, 0, 4, 4, 0, 5, 5, 5, 1] as int[]
+        11    | up         | [5, 4, 4, 4, 4, 4, 0, 4, 4, 4, 0, 5, 5, 1] as int[]
+        12    | up         | [5, 5, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0, 5, 1] as int[]
+        13    | up         | [5, 5, 5, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 1] as int[]
     }
 
     def '"doMove" Check game over'() {
@@ -144,7 +145,7 @@ class KalahGameSpec extends Specification {
         kalahGame.board = [3, 2, 6, 1, 7, 4, 18, 0, 0, 0, 0, 0, 1, 9] as int[]
 
         when:
-        kalahGame.doMove(12)
+        kalahGame.doMove(13)
 
         then:
         kalahGame.board == [0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10] as int[]
@@ -167,8 +168,8 @@ class KalahGameSpec extends Specification {
 
         where:
         side | pitId
-        up   | 9
-        down | 4
+        up   | 10
+        down | 5
     }
 
     def '"doMove" Move last into empty pit of the player side should catch the stone and its opponent opposite stones'() {
@@ -188,10 +189,10 @@ class KalahGameSpec extends Specification {
 
         where:
         board                                                | side | pitId | expectedBoard
-        [3, 2, 6, 1, 2, 4, 18, 4, 3, 4, 7, 0, 1, 9] as int[] | up   | 8     | [3, 0, 6, 1, 2, 4, 18, 4, 0, 5, 8, 0, 1, 12] as int[]
-        [3, 2, 6, 2, 2, 0, 18, 4, 3, 4, 7, 4, 1, 9] as int[] | down | 3     | [3, 2, 6, 0, 3, 0, 23, 0, 3, 4, 7, 4, 1, 9] as int[]
-        [0, 2, 6, 2, 2, 3, 18, 4, 2, 4, 7, 4, 2, 9] as int[] | up   | 12    | [1, 2, 6, 2, 2, 3, 18, 4, 2, 4, 7, 4, 0, 10] as int[] // move to 0 of opponent works as normal
-        [3, 2, 6, 2, 2, 3, 18, 4, 0, 4, 7, 4, 1, 9] as int[] | down | 5     | [3, 2, 6, 2, 2, 0, 19, 5, 1, 4, 7, 4, 1, 9] as int[] // move to 0 of opponent works as normal
+        [3, 2, 6, 1, 2, 4, 18, 4, 3, 4, 7, 0, 1, 9] as int[] | up   | 9     | [3, 0, 6, 1, 2, 4, 18, 4, 0, 5, 8, 0, 1, 12] as int[]
+        [3, 2, 6, 2, 2, 0, 18, 4, 3, 4, 7, 4, 1, 9] as int[] | down | 4     | [3, 2, 6, 0, 3, 0, 23, 0, 3, 4, 7, 4, 1, 9] as int[]
+        [0, 2, 6, 2, 2, 3, 18, 4, 2, 4, 7, 4, 2, 9] as int[] | up   | 13    | [1, 2, 6, 2, 2, 3, 18, 4, 2, 4, 7, 4, 0, 10] as int[] // move to 0 of opponent works as normal
+        [3, 2, 6, 2, 2, 3, 18, 4, 0, 4, 7, 4, 1, 9] as int[] | down | 6     | [3, 2, 6, 2, 2, 0, 19, 5, 1, 4, 7, 4, 1, 9] as int[] // move to 0 of opponent works as normal
     }
 
 }
