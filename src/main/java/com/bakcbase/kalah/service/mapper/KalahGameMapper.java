@@ -20,6 +20,7 @@ public class KalahGameMapper implements BaseDtoDomainMapper<KalahGameTo, KalahGa
         if (kalahGame == null) return null;
 
         return new KalahGameTo(kalahGame.getId(),
-                IntStream.range(0, kalahGame.getBoard().length).boxed().collect(toMap(i -> i + 1, i -> kalahGame.getBoard()[i])));
+                IntStream.range(0, kalahGame.getBoard().length).boxed().collect(toMap(i -> String.valueOf(i + 1),
+                        i -> String.valueOf(kalahGame.getBoard()[i]))));
     }
 }

@@ -39,7 +39,8 @@ class DefaultKalahGameServiceSpec extends Specification {
 
         then: 'KalahGameTo is created with an id'
         kalahGameTo.id == 100L
-        kalahGameTo.status == [1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6, 7: 0, 8: 6, 9: 6, 10: 6, 11: 6, 12: 6, 13: 6, 14: 0]
+        kalahGameTo.status == ["1": "6", "2": "6", "3": "6", "4": "6", "5": "6", "6": "6", "7": "0",
+                               "8": "6", "9": "6", "10": "6", "11": "6", "12": "6", "13": "6", "14": "0"]
 
     }
 
@@ -63,20 +64,21 @@ class DefaultKalahGameServiceSpec extends Specification {
         KalahGameRepository kalahGameRepository = Stub()
         kalahGameService.kalahGameRepository = kalahGameRepository
         LockProvider lockProvider = Stub()
-        lockProvider.doInLock(_,_) >> { KalahGame kalahGame, Function<KalahGame, KalahGame> kalahGameFunc ->
+        lockProvider.doInLock(_, _) >> { KalahGame kalahGame, Function<KalahGame, KalahGame> kalahGameFunc ->
             kalahGameFunc.apply(kalahGame)
         }
         kalahGameService.lockProvider = lockProvider
         kalahGameRepository.findById(_) >> Optional.of(new KalahGame(100L, created, new Date(), new Date(), 6,
                 6, up, [6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0] as int[]))
-        kalahGameRepository.save(_) >> { KalahGame kalahGame -> kalahGame}
+        kalahGameRepository.save(_) >> { KalahGame kalahGame -> kalahGame }
 
         when:
         KalahGameTo kalahGameTo = kalahGameService.move(100L, 11)
 
         then:
         kalahGameTo.id == 100L
-        kalahGameTo.status == [1: 7, 2: 7, 3: 7, 4: 6, 5: 6, 6: 6, 7: 0, 8: 6, 9: 6, 10: 6, 11: 0, 12: 7, 13: 7, 14: 1]
+        kalahGameTo.status == ["1": "7", "2": "7", "3": "7", "4": "6", "5": "6", "6": "6", "7": "0",
+                               "8": "6", "9": "6", "10": "6", "11": "0", "12": "7", "13": "7", "14": "1"] as Map
     }
 
 

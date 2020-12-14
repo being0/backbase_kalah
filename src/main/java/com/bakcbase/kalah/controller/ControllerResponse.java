@@ -30,5 +30,5 @@ public class ControllerResponse {
     /**
      * Game status
      */
-    private Map status;
+    private Map<String, String> status;
 }
