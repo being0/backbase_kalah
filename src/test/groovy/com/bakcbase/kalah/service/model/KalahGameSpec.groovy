@@ -6,6 +6,7 @@ import static com.bakcbase.kalah.service.model.KalahGame.BoardSide.down
 import static com.bakcbase.kalah.service.model.KalahGame.BoardSide.up
 import static com.bakcbase.kalah.service.model.KalahGame.GameStatus.created
 import static com.bakcbase.kalah.service.model.KalahGame.GameStatus.over
+import static com.bakcbase.kalah.service.model.KalahGame.GameStatus.running
 
 class KalahGameSpec extends Specification {
 
@@ -116,21 +117,81 @@ class KalahGameSpec extends Specification {
         kalahGame.doMove(pitId as Integer)
 
         then:
+        kalahGame.board == expectedBoard
 
         where:
-        pitId | palyerSide
-        0     | up
-        1     | up
-        2     | up
-        3     | up
-        4     | up
-        5     | up
-        7     | down
-        8     | down
-        9     | down
-        10    | down
-        11    | down
-        12    | down
+        pitId | palyerSide | expectedBoard
+        0     | down       | [0, 5, 5, 5, 5, 4, 0, 4, 4, 4, 4, 4, 4, 0] as int[]
+        1     | down       | [4, 0, 5, 5, 5, 5, 0, 4, 4, 4, 4, 4, 4, 0] as int[]
+        2     | down       | [4, 4, 0, 5, 5, 5, 1, 4, 4, 4, 4, 4, 4, 0] as int[]
+        3     | down       | [4, 4, 4, 0, 5, 5, 1, 5, 4, 4, 4, 4, 4, 0] as int[]
+        4     | down       | [4, 4, 4, 4, 0, 5, 1, 5, 5, 4, 4, 4, 4, 0] as int[]
+        5     | down       | [4, 4, 4, 4, 4, 0, 1, 5, 5, 5, 4, 4, 4, 0] as int[]
+        7     | up         | [4, 4, 4, 4, 4, 4, 0, 0, 5, 5, 5, 5, 4, 0] as int[]
+        8     | up         | [4, 4, 4, 4, 4, 4, 0, 4, 0, 5, 5, 5, 5, 0] as int[]
+        9     | up         | [4, 4, 4, 4, 4, 4, 0, 4, 4, 0, 5, 5, 5, 1] as int[]
+        10    | up         | [5, 4, 4, 4, 4, 4, 0, 4, 4, 4, 0, 5, 5, 1] as int[]
+        11    | up         | [5, 5, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0, 5, 1] as int[]
+        12    | up         | [5, 5, 5, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 1] as int[]
+    }
+
+    def '"doMove" Check game over'() {
+
+        given:
+        KalahGame kalahGame = KalahGame.doCreate(6, 4)
+        kalahGame.status == running
+        kalahGame.setPlayerSide(up)
+        kalahGame.board = [3, 2, 6, 1, 7, 4, 18, 0, 0, 0, 0, 0, 1, 9] as int[]
+
+        when:
+        kalahGame.doMove(12)
+
+        then:
+        kalahGame.board == [0, 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 10] as int[]
+        kalahGame.status == over
+    }
+
+    def '"doMove" Move last into kalah keep the turn as it is'() {
+
+        given:
+        KalahGame kalahGame = KalahGame.doCreate(6, 4)
+        kalahGame.status == running
+        kalahGame.setPlayerSide(side)
+        kalahGame.board = [3, 2, 6, 1, 2, 4, 18, 4, 3, 4, 7, 3, 1, 9] as int[]
+
+        when:
+        kalahGame.doMove(pitId)
+
+        then:
+        kalahGame.playerSide == side
+
+        where:
+        side | pitId
+        up   | 9
+        down | 4
+    }
+
+    def '"doMove" Move last into empty pit of the player side should catch the stone and its opponent opposite stones'() {
+
+        given:
+        KalahGame kalahGame = KalahGame.doCreate(6, 4)
+        kalahGame.status == running
+        kalahGame.setPlayerSide(side)
+        kalahGame.board = board
+
+        when:
+        kalahGame.doMove(pitId)
+
+        then:
+        kalahGame.board == expectedBoard as int[]
+        kalahGame.playerSide == side.opponentSide
+
+        where:
+        board                                                | side | pitId | expectedBoard
+        [3, 2, 6, 1, 2, 4, 18, 4, 3, 4, 7, 0, 1, 9] as int[] | up   | 8     | [3, 0, 6, 1, 2, 4, 18, 4, 0, 5, 8, 0, 1, 12] as int[]
+        [3, 2, 6, 2, 2, 0, 18, 4, 3, 4, 7, 4, 1, 9] as int[] | down | 3     | [3, 2, 6, 0, 3, 0, 23, 0, 3, 4, 7, 4, 1, 9] as int[]
+        [0, 2, 6, 2, 2, 3, 18, 4, 2, 4, 7, 4, 2, 9] as int[] | up   | 12    | [1, 2, 6, 2, 2, 3, 18, 4, 2, 4, 7, 4, 0, 10] as int[] // move to 0 of opponent works as normal
+        [3, 2, 6, 2, 2, 3, 18, 4, 0, 4, 7, 4, 1, 9] as int[] | down | 5     | [3, 2, 6, 2, 2, 0, 19, 5, 1, 4, 7, 4, 1, 9] as int[] // move to 0 of opponent works as normal
     }
 
 }

@@ -237,7 +237,7 @@ public class KalahGame {
         int diff = kalahIndex - pitId;
         int opponentPitId = pitId > noOfPits ? diff - 1 : kalah1Index + diff;
 
-        // Join the pit and opponent pit stones into kalah
+        // Put the pit and opponent pit stones into kalah
         board[kalahIndex] += (board[pitId] + board[opponentPitId]);
         board[pitId] = 0;
         board[opponentPitId] = 0;
