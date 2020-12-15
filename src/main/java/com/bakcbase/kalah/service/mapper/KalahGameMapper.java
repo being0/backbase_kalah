@@ -4,6 +4,8 @@ import com.bakcbase.kalah.service.model.KalahGame;
 import com.bakcbase.kalah.to.KalahGameTo;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toMap;
@@ -19,8 +21,11 @@ public class KalahGameMapper implements BaseDtoDomainMapper<KalahGameTo, KalahGa
     public KalahGameTo mapToDto(KalahGame kalahGame) {
         if (kalahGame == null) return null;
 
-        return new KalahGameTo(kalahGame.getId(),
-                IntStream.range(0, kalahGame.getBoard().length).boxed().collect(toMap(i -> String.valueOf(i + 1),
-                        i -> String.valueOf(kalahGame.getBoard()[i]))));
+        // Use a linked hash map to keep the order of insertion
+        LinkedHashMap<String, String> linkedMap = new LinkedHashMap<>();
+        for (int i = 0; i < kalahGame.getBoard().length; i++)
+            linkedMap.put(String.valueOf(i + 1), String.valueOf(kalahGame.getBoard()[i]));
+
+        return new KalahGameTo(kalahGame.getId(), linkedMap);
     }
 }
