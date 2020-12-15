@@ -51,7 +51,7 @@ Here are the main components of Kalah game service
           
 #### * KalahGameService
 
-Kalah game service is the logic of the application. It persists orders using KalahGameRepository.
+Kalah game service is the logic of the application. It persists KalahGame using KalahGameRepository.
 Kalah game service to the move operation in a lock block that is provided by LockProvider interface.
 LockProvider insures that we won't have race condition and kalahGame won't be inconsistent.    
     
@@ -61,11 +61,11 @@ LockProvider insures that we won't have race condition and kalahGame won't be in
 
 #### * KalahGameTo
 
-  KalahGameTo is [**Data Transfer Object(DTO)**](https://en.wikipedia.org/wiki/Data_transfer_object) for the order domain model.
+  KalahGameTo is [**Data Transfer Object(DTO)**](https://en.wikipedia.org/wiki/Data_transfer_object) for the KalahGame domain model.
 
 #### * KalahGameMapper
 
-   maps order domains to order transfer object.
+   maps KalahGame domains to transfer object(KalahGameTo).
    
 #### * KalahGameRepository
     
