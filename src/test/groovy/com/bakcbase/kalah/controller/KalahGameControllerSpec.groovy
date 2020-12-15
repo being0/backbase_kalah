@@ -94,7 +94,7 @@ class KalahGameControllerSpec extends Specification {
         response.andExpect(MockMvcResultMatchers.status().isBadRequest())
     }
 
-    def '"PUT /games/{gameId}/pits/{pitId}" should shows status'() {
+    def '"PUT /games/{gameId}/pits/{pitId}" normal behavior should returns id, url and status'() {
         given:
         Long id = 12L
         Integer pitId = 3
