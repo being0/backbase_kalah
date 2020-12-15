@@ -195,4 +195,17 @@ class KalahGameSpec extends Specification {
         [3, 2, 6, 2, 2, 3, 18, 4, 0, 4, 7, 4, 1, 9] as int[] | down | 6     | [3, 2, 6, 2, 2, 0, 19, 5, 1, 4, 7, 4, 1, 9] as int[] // move to 0 of opponent works as normal
     }
 
+    def '"doMove" Check boundary of moving 1'() {
+
+        given:
+        KalahGame kalahGame = KalahGame.doCreate(6, 4)
+        kalahGame.board = [1, 1, 0, 0, 10, 0, 16, 0, 0, 0, 0, 0, 1, 19] as int[]
+
+        when:
+        KalahGame movedGame = kalahGame.doMove(2)
+
+        then:
+        movedGame.board == [1, 0, 0, 0, 10, 0, 17, 0, 0, 0, 0, 0, 1, 19] as int[]
+    }
+
 }
