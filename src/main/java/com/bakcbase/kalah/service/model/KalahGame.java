@@ -12,6 +12,8 @@ import static com.bakcbase.kalah.service.model.KalahGame.BoardSide.up;
 import static com.bakcbase.kalah.service.model.KalahGame.GameStatus.*;
 
 /**
+ * Kalah game domain model
+ *
  * @author <a href="mailto:raliakbari@gmail.com">Reza Aliakbari</a>
  * @version 1, 12/11/2020
  */
