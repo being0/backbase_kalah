@@ -52,8 +52,8 @@ Here are the main components of Kalah game service
 #### * KalahGameService
 
 Kalah game service is the logic of the application. It persists KalahGame using KalahGameRepository.
-Kalah game service to the move operation in a lock block that is provided by LockProvider interface.
-LockProvider insures that we won't have race condition and kalahGame won't be inconsistent.    
+Kalah game service does the move operation in a lock block that is provided by LockProvider interface.
+LockProvider ensures that we won't have race condition and kalahGame won't be inconsistent.    
     
 #### * KalahGame
 
@@ -65,7 +65,7 @@ LockProvider insures that we won't have race condition and kalahGame won't be in
 
 #### * KalahGameMapper
 
-   maps KalahGame domains to transfer object(KalahGameTo).
+   Maps KalahGame domains to transfer object(KalahGameTo).
    
 #### * KalahGameRepository
     
