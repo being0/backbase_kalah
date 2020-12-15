@@ -32,7 +32,7 @@ class KalahGameMapperSpec extends Specification {
         then:
         kalahGameTo.getStatus().size() == board.size()
         for (int i = 1; i <= board.length; i++)
-            kalahGameTo.getStatus().get(i) == board[i - 1]
+            assert kalahGameTo.getStatus().get(String.valueOf(i)) == String.valueOf(board[i - 1])
     }
 
 }
