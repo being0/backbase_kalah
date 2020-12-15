@@ -114,3 +114,5 @@ To build this project on the root of the project run this command:
 * Investigate for a NoSql
     
     The scenario matches well for a NoSql like MongoDB. Let's talk for Cons. and Pros.    
+
+* Keep history of movements
