@@ -95,7 +95,7 @@ Also this one for example to move the game to next state:
 
 To start MySql and Redis cd to docker folder and then run this command: 
 
-    $ ./docker-compose -up
+    $ docker-compose up
 
     
 ## Build 
